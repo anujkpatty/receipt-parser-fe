@@ -47,6 +47,7 @@ const customStyles = computed(() => ({
   border-radius: 6px;
   font-weight: 600;
   transition: background-color 0.3s ease;
+  margin: 4px;
 
   &.btn-sm {
     padding: 6px 12px;

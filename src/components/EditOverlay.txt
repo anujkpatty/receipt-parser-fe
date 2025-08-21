@@ -1,0 +1,38 @@
+<template>
+  <div v-if="openModel" class="edit-overlay" @click.self="openModel = false">
+    <div class="edit-form" @click.stop tabindex="0">
+      <h3>{{ title }}</h3>
+
+      <label v-for="input in inputs" :key="input.name">
+        Name
+        <input v-model="newItem.name" />
+      </label>
+      <label>
+        Quantity
+        <input v-model.number="newItem.quantity" type="number" />
+      </label>
+      <label>
+        Price per
+        <input v-model.number="newItem.price_per_unit" type="number" />
+      </label>
+      <div class="buttons">
+        <ButtonComponent @click="save">Add</ButtonComponent>
+        <ButtonComponent @click="openModel = false">Cancel</ButtonComponent>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import ButtonComponent from '@/components/ButtonComponent.vue'
+defineProps({
+  inputs: {
+    type: Array,
+  },
+  title: {
+    type: String,
+  },
+})
+
+const openModel = defineModel()
+</script>
