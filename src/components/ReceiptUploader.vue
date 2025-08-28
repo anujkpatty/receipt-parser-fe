@@ -1,12 +1,11 @@
 <template>
+  <div class="header" :style="{ background: gradient }">
+    <h2>Total: ${{ itemsStore.total.toFixed(2) }}</h2>
+    <button-component v-if="itemsStore.parsedItems.length" @click="toggleSelect" class="select">{{
+      selectItems ? 'X' : '⎷'
+    }}</button-component>
+  </div>
   <div class="main-container">
-    <h1>Receipt Parser</h1>
-    <!-- Upload and capture controls -->
-
-    <label v-if="!imageFile" class="upload-label">
-      <input type="file" accept="image/*" @change="handleFileChange" class="upload-input" />
-      <span class="upload-button">📷 Upload Photo</span>
-    </label>
     <ButtonComponent
       @click="uploadReceipt"
       v-if="imageFile"
@@ -16,12 +15,16 @@
       {{ loading ? 'Parsing...' : 'Upload & Parse' }}
     </ButtonComponent>
     <div class="buttons">
-      <ButtonComponent v-if="itemsStore.parsedItems.length" @click="addItemForm = true"
+      <label v-if="!imageFile" class="upload-label">
+        <input type="file" accept="image/*" @change="handleFileChange" class="upload-input" />
+        <span class="upload-button">Upload Receipt</span>
+      </label>
+      <ButtonComponent
+        v-if="itemsStore.parsedItems.length"
+        @click="addItemForm = true"
+        class="add-button"
         >Add Item</ButtonComponent
       >
-      <button-component v-if="itemsStore.parsedItems.length" @click="toggleSelect">{{
-        selectItems ? 'Cancel' : 'Select Items'
-      }}</button-component>
     </div>
 
     <div v-if="addItemForm" class="edit-overlay" @click.self="addItemForm = false">
@@ -47,10 +50,10 @@
     </div>
 
     <!-- Display result -->
-    <div v-if="itemsStore.parsedItems.length">
+    <div v-if="itemsStore.ungroupedItems.length">
       <div class="items">
         <ListItem
-          v-for="(item, index) in itemsStore.parsedItems"
+          v-for="(item, index) in itemsStore.ungroupedItems"
           :key="item.name + index"
           :itemName="item.name"
           :itemPrice="item.price"
@@ -60,11 +63,37 @@
       </div>
     </div>
 
-    <button-component v-if="itemsStore.selectedItems.length && selectItems" @click="createGroup">
-      Group
+    <button-component
+      v-if="itemsStore.selectedItems.length && selectItems"
+      @click="createGroupForm = true"
+      class="create-group"
+    >
+      Create Group
     </button-component>
 
+    <div v-if="createGroupForm" class="edit-overlay" @click.self="createGroupForm = false">
+      <div class="edit-form" @click.stop tabindex="0">
+        <h3>Create Group</h3>
+        <label>
+          Name
+          <input v-model="newGroupName" />
+        </label>
+        <div class="buttons">
+          <ButtonComponent @click="createGroup">Add</ButtonComponent>
+        </div>
+      </div>
+    </div>
+
     <div v-if="error" class="mt-4 text-red-500">Error: {{ error }}</div>
+    <div v-if="!itemsStore.ungroupedItems.length && itemsStore.parsedItems.length">
+      No items remaining
+    </div>
+    <button-component
+      v-if="itemsStore.groups.length && !selectItems"
+      @click="router.push('/groups')"
+      class="create-group"
+      >View Groups</button-component
+    >
   </div>
 </template>
 
@@ -82,6 +111,11 @@ const error = ref(null)
 const loading = ref(false)
 const addItemForm = ref(false)
 const selectItems = ref(false)
+const createGroupForm = ref(false)
+
+const newGroupName = ref('')
+
+// const gradient = ref('linear-gradient(to bottom, rgba(0,0,0,0.1), transparent)')
 
 const newItem = ref({
   name: '',
@@ -107,7 +141,6 @@ function toggleSelect() {
 }
 
 async function uploadReceipt() {
-  console.log('HELLO')
   loading.value = true
   try {
     await itemsStore.uploadReceipt(imageFile.value)
@@ -129,17 +162,34 @@ function addItem() {
   addItemForm.value = false
 }
 function createGroup() {
-  itemsStore.createGroup()
+  itemsStore.createGroup(newGroupName.value)
+  newGroupName.value = ''
   router.push('/groups')
 }
 </script>
 
 <style scoped lang="scss">
+.header {
+  height: 60px;
+  width: 100%;
+  padding: 12px;
+  color: #000;
+  position: fixed;
+  border-bottom: 1px solid #000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  z-index: 9999;
+  background-color: #f2f5f3;
+}
 .main-container {
+  top: 75px;
   padding: 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  position: relative;
+  padding-bottom: 100px;
 }
 
 .items {
@@ -169,19 +219,18 @@ function createGroup() {
   }
 
   .upload-button {
-    background-color: #4f46e5;
+    background-color: #f2f5f3;
     color: #fff;
     padding: 12px 20px;
     font-size: 1rem;
-    border-radius: 8px;
     font-weight: 600;
+    border: 1px solid #000;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.2s ease;
+    transition: background-color 0.1s ease;
     display: inline-block;
-
-    &:hover {
-      background-color: #4338ca;
-    }
+    color: #000;
+    height: 50px;
+    width: 160;
   }
 }
 
@@ -213,5 +262,19 @@ function createGroup() {
   display: flex;
   justify-content: flex-end;
   gap: 8px;
+}
+.select {
+  height: 30px !important;
+  width: 30px !important;
+}
+.add-button {
+  height: 50px;
+  width: 160px;
+}
+.create-group {
+  position: fixed;
+  bottom: 30px;
+  height: 50px;
+  width: 160px;
 }
 </style>

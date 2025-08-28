@@ -16,11 +16,11 @@ const attrs = useAttrs()
 const props = defineProps({
   color: {
     type: String,
-    default: '#4f46e5', // Indigo
+    default: '#f2f5f3', // Indigo
   },
   textColor: {
     type: String,
-    default: '#fff',
+    default: '#000',
   },
   size: {
     type: String,
@@ -43,11 +43,14 @@ const customStyles = computed(() => ({
 
 <style scoped lang="scss">
 .custom-button {
-  border: none;
-  border-radius: 6px;
+  border: 1px solid #000;
   font-weight: 600;
-  transition: background-color 0.3s ease;
-  margin: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.1s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
 
   &.btn-sm {
     padding: 6px 12px;
@@ -55,8 +58,10 @@ const customStyles = computed(() => ({
   }
 
   &.btn-md {
-    padding: 10px 20px;
+    padding: 10px 10px;
     font-size: 1rem;
+    height: 50px;
+    width: 160px;
   }
 
   &.btn-lg {

@@ -87,10 +87,13 @@ function deleteItem() {
   align-items: center;
   justify-content: space-between;
   min-width: 300px;
+  padding: 12px;
+
   &.selected {
-    background: #cce5ff;
+    background: #eef6ff;
     border: 1px solid;
-    border-color: #66b2ff;
+    border-color: #4ca5fe;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   }
 }
 

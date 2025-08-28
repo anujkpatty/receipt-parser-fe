@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
 import axios from 'axios'
 
@@ -13,6 +13,11 @@ export const useItemsStore = defineStore('items', () => {
   const selectedItems = ref([])
   const groups = ref([])
   const currId = ref(0)
+  const total = computed(() =>
+    parsedItems.value.length ? parsedItems.value.reduce((acc, el) => acc + el.price, 0) : 0,
+  )
+  const tax = ref(8.87)
+  const tip = ref(20)
 
   function toggleSelect(id) {
     if (selectedItems.value.includes(id)) {
@@ -44,6 +49,7 @@ export const useItemsStore = defineStore('items', () => {
     if (!imageFile) return
 
     parsedItems.value = []
+    groups.value = []
     currId.value = 0
     selectedItems.value = []
 
@@ -60,7 +66,6 @@ export const useItemsStore = defineStore('items', () => {
 
   function addItem(item) {
     item.id = currId.value++
-    console.log(item)
     parsedItems.value.push(item)
   }
 
@@ -73,20 +78,35 @@ export const useItemsStore = defineStore('items', () => {
 
   function deleteItem(id) {
     const index = parsedItems.value.findIndex((el) => el.id === id)
-    parsedItems.value.splice(index, 1)
+    const item = parsedItems.value[index]
+    if (item.groupId) {
+      parsedItems.value[index].groupId = null
+    } else {
+      parsedItems.value.splice(index, 1)
+    }
   }
 
-  function createGroup() {
+  function createGroup(name) {
     const newGroup = {}
+    newGroup.name = name
     newGroup.id = currId.value++
-    newGroup.items = []
     selectedItems.value.forEach((id) => {
       const index = parsedItems.value.findIndex((el) => el.id === id)
-      newGroup.items.push(parsedItems.value[index])
-      parsedItems.value.splice(index, 1)
+      parsedItems.value[index].groupId = newGroup.id
     })
     clearSelectedItems()
     groups.value.push(newGroup)
+  }
+
+  function getGroup(id) {
+    return groups.value.find((group) => group.id === parseInt(id))
+  }
+
+  const ungroupedItems = computed(() => parsedItems.value.filter((item) => !item.groupId))
+  const groupedItems = computed(() => parsedItems.value.filter((item) => item.groupId))
+
+  function getItemsInGroup(id) {
+    return groupedItems.value.filter((item) => item.groupId === parseInt(id))
   }
 
   return {
@@ -101,5 +121,12 @@ export const useItemsStore = defineStore('items', () => {
     isSelected,
     createGroup,
     groups,
+    tax,
+    tip,
+    getGroup,
+    ungroupedItems,
+    groupedItems,
+    getItemsInGroup,
+    total,
   }
 })
