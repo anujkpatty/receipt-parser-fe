@@ -8,12 +8,13 @@
   <div class="main-container">
     <ButtonComponent
       @click="uploadReceipt"
-      v-if="imageFile"
+      v-if="imageFile && !loading"
       :disabled="loading"
       class="bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700 disabled:opacity-50"
     >
-      {{ loading ? 'Parsing...' : 'Upload & Parse' }}
+      Parse
     </ButtonComponent>
+    <SpinnerComponent v-if="loading" />
     <div class="buttons">
       <label v-if="!imageFile" class="upload-label">
         <input type="file" accept="image/*" @change="handleFileChange" class="upload-input" />
@@ -30,21 +31,21 @@
     <div v-if="addItemForm" class="edit-overlay" @click.self="addItemForm = false">
       <div class="edit-form" @click.stop tabindex="0">
         <h3>Add Item</h3>
-        <label>
-          Name
-          <input v-model="newItem.name" />
-        </label>
-        <label>
-          Quantity
-          <input v-model.number="newItem.quantity" type="number" />
-        </label>
-        <label>
-          Price per
-          <input v-model.number="newItem.price_per_unit" type="number" />
-        </label>
+        <div class="edit-form-inputs">
+          <span>Name</span>
+          <input v-model="newItem.name" class="edit-form-input" />
+        </div>
+        <div class="edit-form-inputs">
+          <span>Quantity</span>
+          <input v-model="newItem.quantity" type="number" class="edit-form-input" />
+        </div>
+        <div class="edit-form-inputs">
+          <span>Price per</span>
+          <input v-model="newItem.price_per_unit" type="number" class="edit-form-input" />
+        </div>
         <div class="buttons">
-          <ButtonComponent @click="addItem">Add</ButtonComponent>
-          <ButtonComponent @click="addItemForm = false">Cancel</ButtonComponent>
+          <ButtonComponent size="sm" @click="addItem">Add</ButtonComponent>
+          <ButtonComponent size="sm" @click="addItemForm = false">Cancel</ButtonComponent>
         </div>
       </div>
     </div>
@@ -74,12 +75,12 @@
     <div v-if="createGroupForm" class="edit-overlay" @click.self="createGroupForm = false">
       <div class="edit-form" @click.stop tabindex="0">
         <h3>Create Group</h3>
-        <label>
-          Name
-          <input v-model="newGroupName" />
-        </label>
+        <div class="edit-form-inputs">
+          <span>Name</span>
+          <input v-model="newGroupName" class="edit-form-input" />
+        </div>
         <div class="buttons">
-          <ButtonComponent @click="createGroup">Add</ButtonComponent>
+          <ButtonComponent @click="createGroup" size="sm">Add</ButtonComponent>
         </div>
       </div>
     </div>
@@ -103,6 +104,7 @@ import ListItem from '@/components/ListItem.vue'
 import ButtonComponent from '@/components/ButtonComponent.vue'
 import { useItemsStore } from '@/stores/items'
 import { useRouter } from 'vue-router'
+import SpinnerComponent from './SpinnerComponent.vue'
 
 const router = useRouter()
 
@@ -183,13 +185,16 @@ function createGroup() {
   background-color: #f2f5f3;
 }
 .main-container {
-  top: 75px;
+  top: 60px;
+  bottom: 0;
   padding: 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  position: relative;
+  position: fixed;
   padding-bottom: 100px;
+  width: 100%;
+  overflow-y: scroll;
 }
 
 .items {
@@ -232,30 +237,6 @@ function createGroup() {
     height: 50px;
     width: 160;
   }
-}
-
-.edit-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: grid;
-  place-items: center;
-  z-index: 1000;
-  background-color: rgba(0, 0, 0, 0.5);
-}
-
-.edit-form {
-  background-color: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin: 16px;
-  min-width: 300px;
 }
 
 .buttons {

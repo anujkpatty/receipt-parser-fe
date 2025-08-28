@@ -1,20 +1,24 @@
 <template>
-  <ButtonComponent @click="router.push('/')">Back to items</ButtonComponent>
-  <GroupComponent v-for="group in store.groups" :key="group.id" :group="group" />
-  <ButtonComponent @click="taxTipForm = true">Edit tax and tip</ButtonComponent>
-  <div v-if="taxTipForm" class="edit-overlay" @click.self="taxTipForm = false">
-    <div class="edit-form" @click.stop tabindex="0">
-      <h3>Enter tax and tip %</h3>
-      <label>
-        Tax
-        <input v-model.number="store.tax" />%
-      </label>
-      <label>
-        Tip
-        <input v-model.number="store.tip" />%
-      </label>
-      <div class="buttons">
-        <ButtonComponent @click="taxTipForm = false">Save</ButtonComponent>
+  <div class="header">
+    <ButtonComponent @click="router.push('/')">Back to items</ButtonComponent>
+    <ButtonComponent @click="taxTipForm = true">Edit tax and tip</ButtonComponent>
+  </div>
+  <div class="main-container">
+    <GroupComponent v-for="group in store.groups" :key="group.id" :group="group" />
+    <div v-if="taxTipForm" class="edit-overlay" @click.self="taxTipForm = false">
+      <div class="edit-form" @click.stop tabindex="0">
+        <h3>Enter tax and tip %</h3>
+        <div class="edit-form-inputs">
+          <span>Tax</span>
+          <input v-model.number="store.tax" class="edit-form-input" />%
+        </div>
+        <div class="edit-form-inputs">
+          <span>Tip</span>
+          <input v-model.number="store.tip" class="edit-form-input" />%
+        </div>
+        <div class="buttons">
+          <ButtonComponent @click="taxTipForm = false">Save</ButtonComponent>
+        </div>
       </div>
     </div>
   </div>
@@ -33,28 +37,31 @@ const router = useRouter()
 const taxTipForm = ref(false)
 </script>
 
-<style lang="scss">
-.edit-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
+<style scoped lang="scss">
+.header {
+  height: 80px;
   width: 100%;
-  height: 100%;
-  display: grid;
-  place-items: center;
-  z-index: 1000;
-  background-color: rgba(0, 0, 0, 0.5);
+  padding: 12px;
+  color: #000;
+  position: fixed;
+  border-bottom: 1px solid #000;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  z-index: 9999;
+  background-color: #f2f5f3;
 }
 
-.edit-form {
-  background-color: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+.main-container {
+  top: 80px;
+  bottom: 0;
+  padding: 12px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin: 16px;
-  min-width: 300px;
+  align-items: center;
+  position: fixed;
+  padding-bottom: 100px;
+  width: 100%;
+  overflow-y: scroll;
 }
 </style>

@@ -1,9 +1,8 @@
 <template>
-  <div class="group">
+  <div class="group" @click="editGroup">
     <span>Group name: {{ group.name }}</span>
     <span>SubTotal: ${{ subtotalPrice.toFixed(2) || 0 }}</span>
     <span>Total (tax and tip): ${{ totalPrice }}</span>
-    <button-component @click="editGroup"></button-component>
   </div>
 </template>
 
@@ -11,7 +10,6 @@
 import { useItemsStore } from '@/stores/items'
 import { computed } from 'vue'
 import { useRouter } from 'vue-router'
-import ButtonComponent from './ButtonComponent.vue'
 
 const router = useRouter()
 
@@ -41,5 +39,10 @@ function editGroup() {
   display: flex;
   flex-direction: column;
   max-width: 300px;
+  background-color: #f2f5f3;
+  margin: 8px;
+  padding: 8px;
+  align-items: start;
+  justify-content: center;
 }
 </style>

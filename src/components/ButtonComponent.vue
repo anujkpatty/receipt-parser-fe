@@ -55,6 +55,7 @@ const customStyles = computed(() => ({
   &.btn-sm {
     padding: 6px 12px;
     font-size: 0.875rem;
+    margin: 10px;
   }
 
   &.btn-md {

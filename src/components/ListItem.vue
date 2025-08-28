@@ -12,18 +12,18 @@
   <div v-if="editing" class="edit-overlay" @click.self="cancelEdit">
     <div class="edit-form" @click.stop tabindex="0">
       <h3>Edit Item</h3>
-      <label>
-        Name
-        <input v-model="tempName" />
-      </label>
-      <label>
-        Price
-        <input v-model.number="tempPrice" type="number" />
-      </label>
+      <div class="edit-form-inputs">
+        <span>Name</span>
+        <input v-model="tempName" class="edit-form-input" />
+      </div>
+      <div class="edit-form-inputs">
+        <span>Price</span>
+        <input v-model.number="tempPrice" class="edit-form-input" type="number" />
+      </div>
       <div class="buttons">
-        <ButtonComponent @click="editItem">Save</ButtonComponent>
-        <ButtonComponent @click="cancelEdit">Cancel</ButtonComponent>
-        <ButtonComponent @click="deleteItem">Delete</ButtonComponent>
+        <ButtonComponent size="sm" @click="editItem">Save</ButtonComponent>
+        <ButtonComponent size="sm" @click="cancelEdit">Cancel</ButtonComponent>
+        <ButtonComponent size="sm" @click="deleteItem">Delete</ButtonComponent>
       </div>
     </div>
   </div>
@@ -110,13 +110,15 @@ function deleteItem() {
 }
 
 .edit-form {
-  background-color: white;
+  background-color: #fff;
   padding: 20px;
-  border-radius: 8px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border: 1px solid #000;
   display: flex;
   flex-direction: column;
   gap: 12px;
+  margin: 16px;
+  min-width: 300px;
 }
 
 .buttons {
