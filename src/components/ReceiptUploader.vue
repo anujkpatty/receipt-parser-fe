@@ -12,13 +12,15 @@
       :disabled="loading"
       class="bg-blue-600 text-white px-4 py-2 rounded shadow hover:bg-blue-700 disabled:opacity-50"
     >
-      Parse
+      Go
     </ButtonComponent>
     <SpinnerComponent v-if="loading" />
     <div class="buttons">
       <label v-if="!imageFile" class="upload-label">
         <input type="file" accept="image/*" @change="handleFileChange" class="upload-input" />
-        <span class="upload-button">Upload Receipt</span>
+        <span class="upload-button">{{
+          itemsStore.parsedItems.length ? 'Re-upload' : 'Upload'
+        }}</span>
       </label>
       <ButtonComponent
         v-if="itemsStore.parsedItems.length"
@@ -235,7 +237,8 @@ function createGroup() {
     display: inline-block;
     color: #000;
     height: 50px;
-    width: 160;
+    width: 160px;
+    text-align: center;
   }
 }
 
