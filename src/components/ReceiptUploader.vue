@@ -29,6 +29,7 @@
         >Add Item</ButtonComponent
       >
     </div>
+    <GettingStarted v-if="!itemsStore.parsedItems.length && !imageFile" />
 
     <div v-if="addItemForm" class="edit-overlay" @click.self="addItemForm = false">
       <div class="edit-form" @click.stop tabindex="0">
@@ -104,6 +105,7 @@
 import { ref } from 'vue'
 import ListItem from '@/components/ListItem.vue'
 import ButtonComponent from '@/components/ButtonComponent.vue'
+import GettingStarted from '@/components/GettingStarted.vue'
 import { useItemsStore } from '@/stores/items'
 import { useRouter } from 'vue-router'
 import SpinnerComponent from './SpinnerComponent.vue'
