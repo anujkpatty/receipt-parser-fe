@@ -4,7 +4,8 @@ import axios from 'axios'
 
 export const useItemsStore = defineStore('items', () => {
   const mock = import.meta.env.VITE_MOCK == 'true'
-  const API_URL = mock ? import.meta.env.VITE_DEV_API_URL : import.meta.env.VITE_API_URL
+  const useDevApi = import.meta.env.VITE_USE_DEV_API == 'true'
+  const API_URL = useDevApi ? import.meta.env.VITE_DEV_API_URL : import.meta.env.VITE_API_URL
   const ENDPOINT = mock ? import.meta.env.VITE_MOCK_ENDPOINT : import.meta.env.VITE_ENDPOINT
 
   const parsedItems = ref([])
